@@ -12,9 +12,29 @@
 </head>
 <body>
     <div class="container">
-        <header id="header"></header>
-        CONTACT
-    <footer id="footer"></footer>
+        <div class="contact">
+            <header id="header"></header>
+            <h2>Contact Us</h2>
+            <form id="contact-form" method="POST" action="/submit-form">
+                <div class="input-group">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required autofocus>
+                </div>
+                <div class="input-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="input-group">
+                    <label for="message">Message:</label>
+                    <textarea id="message" name="message" rows="5" required></textarea>
+                </div>
+                <button id="submit-button" type="submit">Submit</button>
+            </form>
+        
+            <div id="response-message" style="display: none;"></div>
+        </div>
+        <footer id="footer"></footer>
     </div>
+    <script src="api.js"></script>
 </body>
 </html>

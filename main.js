@@ -6,9 +6,8 @@ const bodyParser = require('body-parser');
 const app = express();
 const port = 8000;
 
-// Подключаем middleware для парсинга тела запроса в формате JSON (для обработки формы обратной связи)
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 
 // Устанавливаем middleware для обработки статических файлов из папки 'www'
 app.use(express.static(path.join(__dirname, 'www')));
@@ -40,6 +39,52 @@ app.get('/api/download-cv', async (req, res) => {
         console.error('Error loading CV:', error);
         res.status(500).send('Internal Server Error');
     }
+});
+
+// Путь к файлу data.json
+const dataFilePath = path.join(__dirname, 'data', 'data.json');
+
+// Проверка наличия файла data.json и его создание, если его нет
+fs.access(dataFilePath, fs.constants.F_OK, (err) => {
+    if (err) {
+        console.error("File 'data.json' does not exist. Creating...");
+        fs.writeFileSync(dataFilePath, '[]');
+        console.log("File 'data.json' created successfully.");
+    }
+});
+
+app.post('/submit-form', (req, res) => {
+
+    const formData = req.body;
+
+    // Добавляем поля date и time с текущей датой и временем на сервере к каждому объекту формы
+    const currentDate = new Date();
+    formData.date = currentDate.toLocaleDateString();
+    formData.time = currentDate.toLocaleTimeString();
+
+    // Чтение текущего содержимого файла data.json
+    fs.readFile(dataFilePath, (err, data) => {
+        if (err) {
+            console.error("Error reading data file:", err);
+            return res.status(500).send("An error occurred while processing the form data.");
+        }
+
+        // Парсинг JSON-данных из файла
+        let jsonData = JSON.parse(data);
+
+        // Добавление новых данных в массив
+        jsonData.push(formData);
+
+        // Запись обновленных данных обратно в файл
+        fs.writeFile(dataFilePath, JSON.stringify(jsonData, null, 2), (err) => {
+            if (err) {
+                console.error("Error writing data to file:", err);
+                return res.status(500).send("An error occurred while processing the form data.");
+            }
+
+            res.status(200).send("Form data saved successfully!");
+        });
+    });
 });
 
 // Запускаем сервер

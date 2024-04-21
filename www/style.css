@@ -17,7 +17,7 @@ ul {
 }
 
 body {
-    background-color: black;
+    background-color: #424242;
     color: antiquewhite;
 }
 
@@ -26,4 +26,56 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     border: 1px solid;
+}
+
+.contact {
+    padding: 0 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+  
+.contact h2 {
+    margin-top: 0;
+    text-align: center;
+}
+  
+.input-group {
+    margin-bottom: 20px;
+}
+  
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+  
+.input-group input[type="text"],
+.input-group input[type="email"],
+.input-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #616161;
+    color: #ffffff;
+    font-size: 16px;
+}
+  
+.input-group textarea {
+    resize: vertical;
+}
+  
+button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #2196F3;
+    color: #ffffff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+  
+button:hover {
+    background-color: #1976D2;
 }

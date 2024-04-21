@@ -14,8 +14,8 @@
 .logo a {
     font-size: 24px;
     font-weight: bold;
+    color: antiquewhite;
     text-decoration: none;
-    color: #333; /* Цвет ссылки */
 }
 
 .menu nav ul {
@@ -35,11 +35,11 @@
 
 .list_menu_item a {
     text-decoration: none;
-    color: #333; /* Цвет ссылки */
+    color: antiquewhite;
     font-size: 18px;
     transition: color 0.3s; /* Плавное изменение цвета */
 }
 
 .list_menu_item a:hover {
-    color: #FF0000; /* Цвет ссылки при наведении */
+    color:blue; /* Цвет ссылки при наведении */
 }
