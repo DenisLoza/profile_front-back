@@ -1,0 +1,45 @@
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+}
+
+.logo a {
+    font-size: 24px;
+    font-weight: bold;
+    text-decoration: none;
+    color: #333; /* Цвет ссылки */
+}
+
+.menu nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.list_menu_item {
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.list_menu_item:last-child {
+    margin-right: 0;
+}
+
+.list_menu_item a {
+    text-decoration: none;
+    color: #333; /* Цвет ссылки */
+    font-size: 18px;
+    transition: color 0.3s; /* Плавное изменение цвета */
+}
+
+.list_menu_item a:hover {
+    color: #FF0000; /* Цвет ссылки при наведении */
+}
