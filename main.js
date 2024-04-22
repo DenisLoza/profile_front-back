@@ -9,8 +9,9 @@ const port = 8000;
 
 app.use(helmet()); // Используем модуль helmet для добавления базовых заголовков безопасности
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+// Устанавливаем максимальный размер данных запроса в целях безопасности (10MB в данном примере)
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: false }));
+app.use(bodyParser.json({ limit: '10mb' }));
 
 // Устанавливаем middleware для обработки статических файлов из папки 'www'
 app.use(express.static(path.join(__dirname, 'www')));
