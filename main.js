@@ -2,9 +2,12 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const bodyParser = require('body-parser');
+const helmet = require('helmet');
 
 const app = express();
 const port = 8000;
+
+app.use(helmet()); // Используем модуль helmet для добавления базовых заголовков безопасности
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
