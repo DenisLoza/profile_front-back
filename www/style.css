@@ -17,37 +17,46 @@ ul {
 }
 
 body {
-    background-color: #424242;
-    color: antiquewhite;
+    background-color: #333; /* Цвет фона */
+    color: #c0c0c0; /* Цвет текста */
 }
 
 .container {
-    height: 100vh;
+    height: 700px;
     max-width: 1200px;
-    margin: 0 auto;
-    border: 1px solid;
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Выравниваем элементы по центру вертикальной оси */
+    /* border: 1px solid #777; Цвет рамки */
+    border-radius: 20px; /* Радиус скругления углов */
+    background-color: #424242; /* Цвет фона */
+    box-shadow: 10px 10px 20px #1a1a1a, -10px -10px 20px #494949; /* Тени */
 }
 
 .contact {
-    padding: 0 20px;
+    padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    background-color: #616161; /* Цвет фона */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Тени */
 }
-  
+
 .contact h2 {
     margin-top: 0;
     text-align: center;
+    color: #c0c0c0; /* Цвет текста */
 }
-  
+
 .input-group {
     margin-bottom: 20px;
 }
-  
+
 .input-group label {
     display: block;
     margin-bottom: 5px;
+    color: #c0c0c0; /* Цвет текста */
 }
-  
+
 .input-group input[type="text"],
 .input-group input[type="email"],
 .input-group textarea {
@@ -55,17 +64,17 @@ body {
     padding: 10px;
     border: none;
     border-radius: 4px;
-    background-color: #616161;
-    color: #ffffff;
+    background-color: #4a4a4a; /* Цвет фона */
+    color: #ffffff; /* Цвет текста */
     font-size: 16px;
 }
-  
+
 .input-group textarea {
     resize: vertical;
 }
-  
+
 button {
-    width: 100%;
+    width: 300px;
     padding: 10px;
     border: none;
     border-radius: 4px;
@@ -75,7 +84,15 @@ button {
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
-  
+
 button:hover {
     background-color: #1976D2;
+}
+
+.aboutme {
+    display: flex;
+}
+
+#footer {
+    margin-top: auto; /* Блок будет всегда внизу родительского контейнера */
 }

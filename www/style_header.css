@@ -1,20 +1,22 @@
 .container_header {
-    width: 100%;
-    width: 90%;
-    margin: 0 auto;
+    width: 900px;
+    margin: 20px auto;
 }
 
 .header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
     padding: 20px 0;
+    background-color: #333; /* Цвет фона */
+    border-radius: 20px; /* Радиус скругления углов */
+    box-shadow: 10px 10px 20px #1a1a1a, -10px -10px 20px #494949; /* Тени */
 }
 
 .logo a {
     font-size: 24px;
     font-weight: bold;
-    color: antiquewhite;
+    color: #c0c0c0; /* Цвет текста */
     text-decoration: none;
 }
 
@@ -35,11 +37,11 @@
 
 .list_menu_item a {
     text-decoration: none;
-    color: antiquewhite;
+    color: #c0c0c0; /* Цвет текста */
     font-size: 18px;
     transition: color 0.3s; /* Плавное изменение цвета */
 }
 
 .list_menu_item a:hover {
-    color:blue; /* Цвет ссылки при наведении */
+    color: #fff; /* Цвет текста при наведении */
 }
