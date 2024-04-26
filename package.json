@@ -1,8 +1,8 @@
 {
   "name": "profile_front-back",
   "version": "1.0.0",
-  "description": "",
-  "main": "loader.js",
+  "description": "WEB application with API functions and server on Node.js",
+  "main": "main.js",
   "scripts": {
     "dev": "nodemon main.js",
     "start": "node main.js"

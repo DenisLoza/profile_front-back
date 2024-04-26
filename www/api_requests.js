@@ -49,16 +49,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
 
                 if (response.ok) {
-                    // Скрываем форму и показываем сообщение "Спасибо"
-                    contactForm.style.display = "none";
+                    const formElements = contactForm.elements;
+                    const messageElement = contactForm.querySelector('#contact-heading');
+                    messageElement.style.display = "none";
                     document.getElementById("response-message").innerText = "Thank you !";
                     document.getElementById("response-message").style.display = "block";
-
+                    for (let i = 0; i < formElements.length; i++) {
+                        formElements[i].disabled = true;
+                    }
                     // Ждем 3 секунды и возвращаем форму
                     setTimeout(() => {
-                        contactForm.reset(); // Сбрасываем форму
-                        contactForm.style.display = "block";
+                        messageElement.style.display = "block";
                         document.getElementById("response-message").style.display = "none";
+                        for (let i = 0; i < formElements.length; i++) {
+                            formElements[i].disabled = false;
+                        }
+                        contactForm.reset(); // Сбрасываем форму
                     }, 3000);
                 } else {
                     throw new Error('Network response was not ok');

@@ -15,20 +15,20 @@
     <header id="header"></header>
 		<div class="contact_container">
 			<div class="social_links">
-				<div>
-					<a class="social" href="mailto: denisloza.git@gmail.com">
+				<div class="social">
+					<a class="social_link" href="mailto: denisloza.git@gmail.com">
 				 		<img src="./img/email_icon-48.png" alt="email_icon">
 				 		<div class="social_description">denisloza.git@gmail.com</div>
 					</a>
 			 </div>
-			 <div>
-					<a class="social" href="https://www.linkedin.com/in/denis-loza/">
+			 <div class="social">
+					<a class="social_link" href="https://www.linkedin.com/in/denis-loza/">
 						<img src="./img/linkedin_icon-50.png" alt="linkedin_icon">
 						<div class="social_description">linkedin.com/in/denis-loza</div>
 					</a>
 			 </div>
-			 <div>
-					<a class="social" href="https://github.com/DenisLoza">
+			 <div class="social">
+					<a class="social_link" href="https://github.com/DenisLoza">
 						<img src="./img/github_icon-50.png" alt="github_icon">
 						<div class="social_description">github.com/DenisLoza</div>
 					</a>
@@ -36,6 +36,7 @@
 			</div>
       <div class="contact">
         <form id="contact-form" method="POST">
+					<div id="response-message" style="display: none;"></div>
           <h2 id="contact-heading">Contact Me</h2>
           <div class="input-group">
             <label for="name">Name:</label>
@@ -56,6 +57,6 @@
 		</div>
     <footer id="footer"></footer>
   </div>
-  <script src="api.js"></script>
+  <script src="api_requests.js"></script>
 </body>
 </html>

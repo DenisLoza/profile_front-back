@@ -27,7 +27,6 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center; /* Выравниваем элементы по центру вертикальной оси */
-    /* border: 1px solid #777; Цвет рамки */
     border-radius: 20px; /* Радиус скругления углов */
     background-color: #424242; /* Цвет фона */
     box-shadow: 10px 10px 20px #1a1a1a, -10px -10px 20px #494949; /* Тени */
@@ -106,10 +105,6 @@ button:hover {
     font-weight: bold;
 }
 
-.button_dovnload_cv {
-    
-}
-
 .photo_home img {
     border: 1px solid #070707;
     border-radius: 50%;
@@ -123,30 +118,35 @@ button:hover {
 .contact_container {
     display: flex;
     align-items: center;
-}
-
-.social_links {
-    
-}
-
-.contact {
     margin-top: 50px;
 }
 
-.social {
+.contact {
+    
+}
+
+.social_link {
     display: flex;
     align-items: center;
+    text-decoration: none;
+    color: #c0c0c0;
+    align-items: center;
+}
+
+.social:not(:first-child) {
     margin-top: 30px;
+}
+
+.social_links {
+    margin-right: 60px;
+    padding: 20px;
+    background-color: #4a4a4a; /* Цвет фона */
+    color: #ffffff; /* Цвет текста */
+    border-radius: 8px;
 }
 
 .social_links img   {
     width: 50px;
-}
-
-.social {
-    text-decoration: none;
-    color: #c0c0c0;
-    align-items: center;
 }
 
 .social_description {
@@ -157,6 +157,7 @@ button:hover {
     margin: 0 auto;
     font-weight: bold;
     font-size: 1.5em;
+    text-align: center;
 }
 
 #footer {
