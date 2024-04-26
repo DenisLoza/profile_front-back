@@ -4,6 +4,7 @@
 - Implemented a simple server on NodeJS
 - There are 2 endpoints configured on the server (a request to download a document and submit form data)
 - On the server side, a simple database (json) is implemented that stores user requests with the addition of the current date and time
+- The application is ready to be deployed via Docker
 
 ### Based on:
 
