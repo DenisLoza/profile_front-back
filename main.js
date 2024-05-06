@@ -2,12 +2,9 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const bodyParser = require('body-parser');
-const helmet = require('helmet');
 
 const app = express();
 const port = 8000;
-
-app.use(helmet()); // Используем модуль helmet для добавления базовых заголовков безопасности
 
 // Устанавливаем максимальный размер данных запроса в целях безопасности (10MB в данном примере)
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: false }));
@@ -16,7 +13,25 @@ app.use(bodyParser.json({ limit: '10mb' }));
 // Устанавливаем middleware для обработки статических файлов из папки 'www'
 app.use(express.static(path.join(__dirname, 'www')));
 
+// Добавляем базовые заголовки безопасности для каждого запроса
+app.use((req, res, next) => {
+    // Запрещаем сайтам встраивать его в iframe
+    res.setHeader('X-Frame-Options', 'DENY');
+
+    // Защищаем от атаки межсайтовой подделки запроса
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+
+    // Предотвращаем атаки межсайтовой подделки запроса для методов, отличных от GET, HEAD, OPTIONS
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+
+    // Запрещаем браузеру запрашивать ресурс через HTTP, если сайт работает по HTTPS
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+
+    next();
+});
+
 // Обработка API-запросов
+
 // Маршрут для загрузки CV
 app.get('/api/download-cv', async (req, res) => {
     try {
@@ -58,7 +73,6 @@ fs.access(dataFilePath, fs.constants.F_OK, (err) => {
 });
 
 app.post('/submit-form', (req, res) => {
-
     const formData = req.body;
 
     // Добавляем поля date и time с текущей датой и временем на сервере к каждому объекту формы
