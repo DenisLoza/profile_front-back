@@ -1,14 +1,15 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
-const bodyParser = require('body-parser');
 
 const app = express();
 const port = 8000;
 
-// Устанавливаем максимальный размер данных запроса в целях безопасности (10MB в данном примере)
-app.use(bodyParser.urlencoded({ limit: '10mb', extended: false }));
-app.use(bodyParser.json({ limit: '10mb' }));
+// Добавляем middleware для обработки тела запроса в формате JSON
+app.use(express.json({ limit: '10mb' }));
+
+// Добавляем middleware для обработки тела запроса в формате URL-encoded
+app.use(express.urlencoded({ limit: '10mb', extended: false }));
 
 // Устанавливаем middleware для обработки статических файлов из папки 'www'
 app.use(express.static(path.join(__dirname, 'www')));
@@ -64,13 +65,13 @@ app.get('/api/download-cv', async (req, res) => {
 const dataFilePath = path.join(__dirname, 'data', 'data.json');
 
 // Проверка наличия файла data.json и его создание, если его нет
-fs.access(dataFilePath, fs.constants.F_OK, (err) => {
-    if (err) {
-        console.error("File 'data.json' does not exist. Creating...");
-        fs.writeFileSync(dataFilePath, '[]');
-        console.log("File 'data.json' created successfully.");
-    }
-});
+try {
+    fs.accessSync(dataFilePath, fs.constants.F_OK);
+} catch (err) {
+    console.error("File 'data.json' does not exist. Creating...");
+    fs.writeFileSync(dataFilePath, '[]');
+    console.log("File 'data.json' created successfully.");
+}
 
 app.post('/submit-form', (req, res) => {
     const formData = req.body;
@@ -81,28 +82,20 @@ app.post('/submit-form', (req, res) => {
     formData.time = currentDate.toLocaleTimeString();
 
     // Чтение текущего содержимого файла data.json
-    fs.readFile(dataFilePath, (err, data) => {
-        if (err) {
-            console.error("Error reading data file:", err);
-            return res.status(500).send("An error occurred while processing the form data.");
-        }
-
-        // Парсинг JSON-данных из файла
-        let jsonData = JSON.parse(data);
+    try {
+        let jsonData = JSON.parse(fs.readFileSync(dataFilePath));
 
         // Добавление новых данных в массив
         jsonData.push(formData);
 
         // Запись обновленных данных обратно в файл
-        fs.writeFile(dataFilePath, JSON.stringify(jsonData, null, 2), (err) => {
-            if (err) {
-                console.error("Error writing data to file:", err);
-                return res.status(500).send("An error occurred while processing the form data.");
-            }
+        fs.writeFileSync(dataFilePath, JSON.stringify(jsonData, null, 2));
 
-            res.status(200).send("Form data saved successfully!");
-        });
-    });
+        res.status(200).send("Form data saved successfully!");
+    } catch (error) {
+        console.error("Error processing form data:", error);
+        res.status(500).send("An error occurred while processing the form data.");
+    }
 });
 
 // Запускаем сервер
