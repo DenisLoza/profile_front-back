@@ -1,68 +1,12 @@
-const express = require('express');
-const path = require('path');
+const http = require('http');
 const fs = require('fs');
+const path = require('path');
+const { parse } = require('querystring');
 
-const app = express();
 const port = 8000;
-
-// Добавляем middleware для обработки тела запроса в формате JSON
-app.use(express.json({ limit: '10mb' }));
-
-// Добавляем middleware для обработки тела запроса в формате URL-encoded
-app.use(express.urlencoded({ limit: '10mb', extended: false }));
-
-// Устанавливаем middleware для обработки статических файлов из папки 'www'
-app.use(express.static(path.join(__dirname, 'www')));
-
-// Добавляем базовые заголовки безопасности для каждого запроса
-app.use((req, res, next) => {
-    // Запрещаем сайтам встраивать его в iframe
-    res.setHeader('X-Frame-Options', 'DENY');
-
-    // Защищаем от атаки межсайтовой подделки запроса
-    res.setHeader('X-XSS-Protection', '1; mode=block');
-
-    // Предотвращаем атаки межсайтовой подделки запроса для методов, отличных от GET, HEAD, OPTIONS
-    res.setHeader('X-Content-Type-Options', 'nosniff');
-
-    // Запрещаем браузеру запрашивать ресурс через HTTP, если сайт работает по HTTPS
-    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
-
-    next();
-});
-
-// Обработка API-запросов
-
-// Маршрут для загрузки CV
-app.get('/api/download-cv', async (req, res) => {
-    try {
-        const filePath = path.join(__dirname, 'data/cv.pdf');
-
-        // Проверяем, существует ли файл
-        const fileStats = await fs.promises.stat(filePath);
-        if (!fileStats.isFile()) {
-            res.status(404).send('File not found');
-            return;
-        }
-
-        // Проверяем, что файл находится в допустимой директории
-        const dataDirectory = path.join(__dirname, 'data');
-        if (!filePath.startsWith(dataDirectory)) {
-            res.status(403).send('Forbidden');
-            return;
-        }
-
-        // Отправляем файл в ответ
-        const fileStream = fs.createReadStream(filePath);
-        fileStream.pipe(res);
-    } catch (error) {
-        console.error('Error loading CV:', error);
-        res.status(500).send('Internal Server Error');
-    }
-});
-
-// Путь к файлу data.json
-const dataFilePath = path.join(__dirname, 'data', 'data.json');
+const wwwPath = path.join(__dirname, 'www');
+const dataPath = path.join(__dirname, 'data');
+const dataFilePath = path.join(dataPath, 'data.json');
 
 // Проверка наличия файла data.json и его создание, если его нет
 try {
@@ -73,32 +17,109 @@ try {
     console.log("File 'data.json' created successfully.");
 }
 
-app.post('/submit-form', (req, res) => {
-    const formData = req.body;
+const server = http.createServer((req, res) => {
+    const requestedUrl = req.url;
 
-    // Добавляем поля date и time с текущей датой и временем на сервере к каждому объекту формы
-    const currentDate = new Date();
-    formData.date = currentDate.toLocaleDateString();
-    formData.time = currentDate.toLocaleTimeString();
+    if (requestedUrl === '/') {
+        const redirectTo = '/index.html';
+        res.writeHead(302, { 'Location': redirectTo });
+        res.end();
+        return;
+    }
 
-    // Чтение текущего содержимого файла data.json
-    try {
-        let jsonData = JSON.parse(fs.readFileSync(dataFilePath));
+    if (requestedUrl === '/api/download-cv') {
+        const filePath = path.join(dataPath, 'cv.pdf');
 
-        // Добавление новых данных в массив
-        jsonData.push(formData);
+        fs.stat(filePath, (err, fileStats) => {
+            if (err || !fileStats.isFile()) {
+                res.writeHead(404, { 'Content-Type': 'text/plain' });
+                res.end('File not found');
+            } else {
+                const fileStream = fs.createReadStream(filePath);
+                fileStream.pipe(res);
+            }
+        });
+    } else if (requestedUrl === '/submit-form' && req.method === 'POST') {
+        let body = '';
+        
+        req.on('data', (chunk) => {
+            body += chunk.toString();
+        });
 
-        // Запись обновленных данных обратно в файл
-        fs.writeFileSync(dataFilePath, JSON.stringify(jsonData, null, 2));
+        req.on('end', () => {
+            // Парсим данные из JSON-строки
+            const formData = JSON.parse(body);
 
-        res.status(200).send("Form data saved successfully!");
-    } catch (error) {
-        console.error("Error processing form data:", error);
-        res.status(500).send("An error occurred while processing the form data.");
+            const currentDate = new Date();
+            formData.date = currentDate.toLocaleDateString();
+            formData.time = currentDate.toLocaleTimeString();
+
+            try {
+                // Читаем текущие данные из файла data.json
+                const jsonData = JSON.parse(fs.readFileSync(dataFilePath));
+
+                // Преобразуем данные формы в нужный формат
+                const formattedData = {
+                    name: formData.name,
+                    email: formData.email,
+                    message: formData.message,
+                    date: formData.date,
+                    time: formData.time
+                };
+
+                // Добавляем новые данные в массив
+                jsonData.push(formattedData);
+
+                // Записываем обновленные данные обратно в файл
+                fs.writeFileSync(dataFilePath, JSON.stringify(jsonData, null, 2));
+                res.writeHead(200, { 'Content-Type': 'text/plain' });
+                res.end('Form data saved successfully!');
+            } catch (error) {
+                console.error("Error processing form data:", error);
+                res.writeHead(500, { 'Content-Type': 'text/plain' });
+                res.end('An error occurred while processing the form data.');
+            }
+        });
+    } else {
+        const filePath = path.join(wwwPath, requestedUrl);
+
+        fs.readFile(filePath, (err, data) => {
+            if (err) {
+                res.writeHead(404, { 'Content-Type': 'text/plain' });
+                res.end('File not found');
+            } else {
+                const contentType = getContentType(filePath);
+                res.writeHead(200, { 'Content-Type': contentType });
+                res.end(data);
+            }
+        });
     }
 });
 
-// Запускаем сервер
-app.listen(port, () => {
+server.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
+
+const getContentType = (filePath) => {
+    const ext = path.extname(filePath).toLowerCase();
+    switch (ext) {
+        case '.html':
+            return 'text/html';
+        case '.css':
+            return 'text/css';
+        case '.js':
+            return 'application/javascript';
+        case '.json':
+            return 'application/json';
+        case '.png':
+            return 'image/png';
+        case '.jpg':
+        case '.jpeg':
+            return 'image/jpeg';
+        case '.pdf':
+            return 'application/pdf';
+        default:
+            return 'application/octet-stream';
+    }
+};
+
