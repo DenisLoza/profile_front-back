@@ -20,6 +20,12 @@ try {
 const server = http.createServer((req, res) => {
     const requestedUrl = req.url;
 
+    // Установка заголовков безопасности
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+
     if (requestedUrl === '/') {
         const redirectTo = '/index.html';
         res.writeHead(302, { 'Location': redirectTo });
@@ -41,7 +47,7 @@ const server = http.createServer((req, res) => {
         });
     } else if (requestedUrl === '/submit-form' && req.method === 'POST') {
         let body = '';
-        
+
         req.on('data', (chunk) => {
             body += chunk.toString();
         });
@@ -72,6 +78,8 @@ const server = http.createServer((req, res) => {
 
                 // Записываем обновленные данные обратно в файл
                 fs.writeFileSync(dataFilePath, JSON.stringify(jsonData, null, 2));
+
+                // Отправляем ответ об успешном сохранении данных
                 res.writeHead(200, { 'Content-Type': 'text/plain' });
                 res.end('Form data saved successfully!');
             } catch (error) {
@@ -122,4 +130,3 @@ const getContentType = (filePath) => {
             return 'application/octet-stream';
     }
 };
-

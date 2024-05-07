@@ -4,13 +4,16 @@ FROM node:20-alpine
 WORKDIR /app
 
 # Скопируйте зависимости приложения
-COPY package*.json /app
+COPY package*.json /app/
 
 # Установите зависимости приложения
 RUN npm install
 
 # Скопируйте исходный код приложения в контейнер
-COPY --chown=node:node . /app
+COPY --chown=node:node . /app/
+
+# Указываем порт, который будет использоваться приложением в контейнере
+EXPOSE 8000
 
 USER node
 
